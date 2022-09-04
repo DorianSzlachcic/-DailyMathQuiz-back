@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from math import floor
-
-from .equation import generate_equation
+import json
 
 app = FastAPI()
 
@@ -18,13 +17,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/{eq_number}")
+def homeApi(eq_number: int):
+    eq = ""
+    with open("equations.json","r") as file:
+        json_object = json.load(file)
+        print(json_object)
+        eq = json_object[str(eq_number)]
 
-@app.get("/")
-def homeApi():
-    data = {}
-    n = 2
-    for i in range(1,11):
-        data[i] = str(generate_equation(n, -2*i + 35))
-        n += 1 if i % 4 == 0 else 0
-
-    return data
+    return eq
